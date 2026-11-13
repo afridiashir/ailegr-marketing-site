@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eef2f0;
+  --surface: #ffffff;
+  --surface-2: #f5f7f6;
+  --foreground: #0f1714;
+  --muted: #5f6b66;
+  --border: #e3e8e5;
+  --brand: #059669;
+  --brand-strong: #047857;
+  --brand-soft: #ecfdf5;
+  --brand-ink: #064e3b;
+  --success: #17a46b;
+  --danger: #e5484d;
+  --warning: #f5b324;
+  --violet: #7c6cf2;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-violet: var(--violet);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-jakarta);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-jakarta), var(--font-inter), system-ui, sans-serif;
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* Emerald panel behind product mockups */
+.sky {
+  background:
+    radial-gradient(38% 22% at 18% 78%, rgba(255, 255, 255, 0.95), transparent 70%),
+    radial-gradient(30% 16% at 40% 88%, rgba(255, 255, 255, 0.9), transparent 70%),
+    radial-gradient(26% 14% at 8% 60%, rgba(255, 255, 255, 0.7), transparent 70%),
+    radial-gradient(22% 12% at 30% 8%, rgba(255, 255, 255, 0.45), transparent 70%),
+    radial-gradient(30% 18% at 85% 96%, rgba(255, 255, 255, 0.8), transparent 70%),
+    linear-gradient(180deg, #047857 0%, #10b981 45%, #8ee2bf 80%, #d9f7ea 100%);
+}
+
+/* Soft glow behind feature mockups */
+.mock-bg {
+  background:
+    radial-gradient(60% 80% at 50% 0%, #ffffff, transparent),
+    linear-gradient(180deg, #f3f6f4, #edf2ef);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+@keyframes grow-up {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes price-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(700%); }
+}
+
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-float { animation: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
