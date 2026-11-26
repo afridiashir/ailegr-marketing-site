@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { CONTACT_TOPICS } from "@/content/site";
+import { buildContactEmail } from "@/lib/contact-email";
 
 /** Recipients are fixed on the server, never taken from the form. */
 const CONTACT_RECIPIENTS = ["eze@ailegr.com", "tech@ailegr.com"];
@@ -31,9 +32,6 @@ function rateLimited(ip: string) {
   if (hits.size > 5000) hits.clear(); // keep memory bounded
   return recent.length > MAX_PER_WINDOW;
 }
-
-const escapeHtml = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 const field = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
 
@@ -78,22 +76,7 @@ export async function sendContactMessage(_prev: ContactState, formData: FormData
   }
 
   const from = process.env.CONTACT_FROM_EMAIL || "Ailegr Website <billing@ailegr.com>";
-  const subject = `[Contact] ${values.topic}: ${values.name}${values.company ? ` (${values.company})` : ""}`;
-  const rows: [string, string][] = [
-    ["Name", values.name],
-    ["Email", values.email],
-    ["Company", values.company || "—"],
-    ["Topic", values.topic],
-  ];
-  const text = `${rows.map(([k, v]) => `${k}: ${v}`).join("\n")}\n\n${values.message}\n\n— Sent from the contact form on ailegr.com`;
-  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#0f1714">
-<h2 style="margin:0 0 12px;font-size:18px">New message from the Ailegr website</h2>
-<table cellpadding="6" style="border-collapse:collapse">${rows
-    .map(([k, v]) => `<tr><td style="color:#5f6b66">${k}</td><td><b>${escapeHtml(v)}</b></td></tr>`)
-    .join("")}</table>
-<p style="white-space:pre-wrap;line-height:1.5;border-left:3px solid #059669;padding-left:12px;margin:16px 0">${escapeHtml(values.message)}</p>
-<p style="color:#5f6b66;font-size:12px">Reply to this email to answer ${escapeHtml(values.name)} directly.</p>
-</div>`;
+  const { subject, html, text } = buildContactEmail(values);
 
   try {
     const res = await fetch(RESEND_URL, {
