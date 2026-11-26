@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { faqs, SIGN_UP_URL } from "@/content/site";
+import { faqs } from "@/content/site";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./ui";
 
@@ -17,9 +17,9 @@ export function FAQ() {
           title="Questions, answered"
           body={
             <>
-              The quickest answer is to try it:{" "}
-              <a href={SIGN_UP_URL} className="font-medium text-brand underline-offset-4 hover:underline">
-                start a free trial
+              Can&apos;t find your answer?{" "}
+              <a href="#contact" className="font-medium text-brand underline-offset-4 hover:underline">
+                Contact us
               </a>
               .
             </>

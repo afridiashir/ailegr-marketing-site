@@ -20,6 +20,7 @@ import {
 import { Accountants } from "@/components/accountants";
 import { AIFeatures } from "@/components/ai-features";
 import { AssistantShowcase } from "@/components/assistant-showcase";
+import { Contact } from "@/components/contact";
 import { Control } from "@/components/control";
 import { FAQ } from "@/components/faq";
 import { HeroDashboard } from "@/components/hero-dashboard";
@@ -236,6 +237,8 @@ export default function Home() {
         <Pricing />
 
         <FAQ />
+
+        <Contact />
 
         {/* Final CTA */}
         <section id="cta" className="px-3 pb-16 sm:px-4">

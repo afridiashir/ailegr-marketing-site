@@ -14,6 +14,7 @@ export const navLinks = [
   { href: "#security", label: "Security" },
   { href: "#pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },
+  { href: "#contact", label: "Contact" },
 ];
 
 /** Pricing. Source of truth: Ailegr-Pricing.md (Nov 2026). Every AI feature is in every plan. */
@@ -56,6 +57,8 @@ export const comingSoon = ["Multi-currency", "API access"];
 /** Formats a plan price: $19.99, $159, $1,590. */
 export const price = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: Number.isInteger(n) ? 0 : 2 });
+
+export const CONTACT_TOPICS = ["General question", "Sales & pricing", "Technical support", "Accountants & partners"] as const;
 
 export const faqs = [
   { q: "Does the AI change my books on its own?", a: "No. It prepares drafts; nothing posts until you approve. You can edit every draft on its approval card first, and permissions follow your role." },
