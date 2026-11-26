@@ -303,7 +303,7 @@ const items = [
 
 export function AIFeatures() {
   return (
-    <section id="ai" className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+    <section id="ai" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:pb-32">
       <SectionHeading
         eyebrow="AI built in"
         title={<>An AI accountant that<br className="hidden sm:block" /> works for you</>}

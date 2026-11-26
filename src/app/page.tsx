@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Accountants } from "@/components/accountants";
 import { AIFeatures } from "@/components/ai-features";
+import { AssistantShowcase } from "@/components/assistant-showcase";
 import { Control } from "@/components/control";
 import { FAQ } from "@/components/faq";
 import { HeroDashboard } from "@/components/hero-dashboard";
@@ -28,10 +29,10 @@ import { Pricing } from "@/components/pricing";
 import { Reports } from "@/components/reports";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui";
-import { navLinks, SIGN_IN_URL, SIGN_UP_URL } from "@/content/site";
+import { faqs, navLinks, plans, SIGN_IN_URL, SIGN_UP_URL, SITE_URL } from "@/content/site";
 
 const coreFeatures = [
-  { icon: FileText, title: "Invoicing", body: "Line items, discounts, tax and partial payments. Email invoices as PDFs from your company's name, with automatic overdue reminders — up to six steps." },
+  { icon: FileText, title: "Invoicing", body: "Branded invoices with your logo and colours. Customers pay online by card or ACH with Pay Now, and overdue reminders go out automatically — up to six steps." },
   { icon: Receipt, title: "Bills & expenses", body: "Record bills and bank or card expenses with attachments, then pay several bills in one pay run." },
   { icon: Landmark, title: "Banking & reconciliation", body: "Connect your bank and card accounts securely. Ailegr suggests matches, turns unmatched lines into expenses in one click, and keeps going until every cent agrees." },
   { icon: Package, title: "Inventory", body: "Track products, services and stock on hand. Cost of goods sold is recorded automatically with every sale." },
@@ -53,6 +54,34 @@ const security = [
   { icon: Banknote, title: "Accurate to the cent", body: "Every amount adds up exactly, so your books always balance." },
 ];
 
+/** Structured data for search engines: the product with real plan prices, and the FAQ. */
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Ailegr",
+    url: SITE_URL,
+    applicationCategory: "BusinessApplication",
+    applicationSubCategory: "Accounting software",
+    operatingSystem: "Web",
+    description:
+      "AI-powered accounting software for small and growing businesses: double-entry bookkeeping with an AI assistant that drafts entries for your approval.",
+    offers: plans.map((p) => ({
+      "@type": "Offer",
+      name: p.name,
+      price: p.monthly.toFixed(2),
+      priceCurrency: "USD",
+      url: `${SITE_URL}/#pricing`,
+      priceSpecification: { "@type": "UnitPriceSpecification", price: p.monthly.toFixed(2), priceCurrency: "USD", unitCode: "MON" },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+];
+
 async function CopyrightYear() {
   "use cache";
   return new Date().getFullYear();
@@ -61,6 +90,7 @@ async function CopyrightYear() {
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <main id="top" className="flex-1">
         {/* Hero */}
         <section className="p-3 sm:p-4">
@@ -103,7 +133,7 @@ export default function Home() {
                   Start free trial
                 </a>
                 <a
-                  href="#ai"
+                  href="#assistant"
                   className="rounded-full border border-border bg-white px-7 py-3.5 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-foreground/25"
                 >
                   See how it works
@@ -128,6 +158,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <AssistantShowcase />
 
         <AIFeatures />
 

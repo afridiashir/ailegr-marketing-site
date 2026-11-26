@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, Minus } from "lucide-react";
+import { Check, Sparkles, UserPlus, Users } from "lucide-react";
 import { useState } from "react";
-import { comingSoon, planMatrix, plans, SIGN_UP_URL } from "@/content/site";
+import { comingSoon, includedInEveryPlan, plans, price, SIGN_UP_URL, YEARLY_SAVING } from "@/content/site";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./ui";
 
@@ -16,8 +16,8 @@ export function Pricing() {
       <div className="mx-auto max-w-6xl rounded-[28px] bg-surface-2 px-4 py-20 sm:px-8 lg:py-24">
         <SectionHeading
           eyebrow="Pricing"
-          title="Choose your plan"
-          body="Every plan includes full double-entry accounting. Start with a free trial on the plan you choose; pay monthly or yearly."
+          title={<>Simple pricing.<br className="hidden sm:block" /> Every AI feature in every plan.</>}
+          body="Pay monthly, or yearly and get about 2 months free."
         />
 
         <Reveal className="mt-8 flex justify-center">
@@ -33,9 +33,14 @@ export function Pricing() {
                 role="tab"
                 aria-selected={billing === b}
                 onClick={() => setBilling(b)}
-                className={`relative z-10 rounded-full px-7 py-1.5 capitalize transition-colors ${billing === b ? "font-medium text-brand-ink" : "text-muted"}`}
+                className={`relative z-10 flex items-center justify-center gap-1.5 rounded-full px-6 py-1.5 capitalize transition-colors ${
+                  billing === b ? "font-medium text-brand-ink" : "text-muted"
+                }`}
               >
                 {b}
+                {b === "yearly" && (
+                  <span className="rounded-full bg-brand px-1.5 text-[10px] font-semibold text-white normal-case">Save {YEARLY_SAVING}</span>
+                )}
               </button>
             ))}
           </div>
@@ -43,7 +48,7 @@ export function Pricing() {
 
         <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-5 lg:grid-cols-3">
           {plans.map((p, i) => {
-            const price = billing === "yearly" ? p.yearly : p.monthly;
+            const amount = billing === "yearly" ? p.yearly : p.monthly;
             return (
               <Reveal key={p.code} delay={i * 100}>
                 <div
@@ -53,45 +58,52 @@ export function Pricing() {
                       : "border-border hover:shadow-[0_24px_50px_-28px_rgba(4,60,40,0.35)]"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold">{p.name}</h3>
-                    {p.featured && <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-medium text-brand">AI Copilot</span>}
+                  <h3 className="font-semibold">{p.name}</h3>
+                  <p className="mt-1 min-h-10 text-sm text-muted">{p.tagline}</p>
+
+                  <div className="mt-5 flex items-baseline gap-1.5">
+                    <span
+                      key={`${billing}-${amount}`}
+                      className="inline-block animate-[price-in_.35s_ease-out] font-display text-[38px] font-bold tracking-tight tabular-nums"
+                    >
+                      {price(amount)}
+                    </span>
+                    <span className="text-sm text-muted">/{billing === "yearly" ? "year" : "month"}</span>
                   </div>
-                  <div className="mt-3 flex h-12 items-baseline gap-1.5">
-                    {price !== null ? (
-                      <>
-                        <span key={`${billing}${price}`} className="inline-block animate-[price-in_.35s_ease-out] font-display text-[34px] font-semibold tracking-tight tabular-nums">
-                          ${price}
-                        </span>
-                        <span className="text-xs text-muted">/ month{billing === "yearly" && ", billed yearly"}</span>
-                      </>
+                  <p className="h-5 text-xs text-muted">
+                    {billing === "yearly" ? (
+                      <span className="font-medium text-brand">Save {YEARLY_SAVING} vs monthly</span>
                     ) : (
-                      <span className="text-lg font-medium text-muted">Price coming soon</span>
+                      <>or {price(p.yearly)}/year (save {YEARLY_SAVING})</>
                     )}
-                  </div>
-                  <p className="text-sm text-muted">{p.tagline}</p>
+                  </p>
 
-                  <div className="my-6 h-px bg-border" />
-
-                  <ul className="flex-1 space-y-3 text-sm">
-                    {planMatrix.map((row) => {
-                      const v = row[p.code];
-                      return (
-                        <li key={row.feature} className={`flex items-start gap-2.5 ${v ? "" : "text-muted/60"}`}>
-                          <span
-                            className={`mt-0.5 grid size-4 shrink-0 place-items-center rounded-full ${v ? "bg-brand-soft text-brand" : "bg-surface-2 text-muted/60"}`}
-                          >
-                            {v ? <Check className="size-2.5" strokeWidth={3} aria-label="Included" /> : <Minus className="size-2.5" strokeWidth={3} aria-label="Not included" />}
-                          </span>
-                          <span>
-                            {row.feature}
-                            {typeof v === "string" && <span className="ml-1 text-xs text-muted">({v})</span>}
-                          </span>
-                        </li>
-                      );
-                    })}
+                  <ul className="mt-6 space-y-3 border-t border-border pt-6 text-sm">
+                    <li className="flex items-center gap-2.5">
+                      <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
+                        <Sparkles className="size-3.5" aria-hidden />
+                      </span>
+                      <span>
+                        <b className="tabular-nums">{p.credits.toLocaleString("en-US")}</b> AI credits per month
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
+                        <Users className="size-3.5" aria-hidden />
+                      </span>
+                      <span>
+                        <b>{p.usersIncluded}</b> {p.usersIncluded === 1 ? "user" : "users"} included
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-muted">
+                        <UserPlus className="size-3.5" aria-hidden />
+                      </span>
+                      <span className="text-muted">Extra users {price(p.extraUser)}/month each</span>
+                    </li>
                   </ul>
 
+                  <div className="flex-1" />
                   <a
                     href={SIGN_UP_URL}
                     className={`mt-8 rounded-xl py-2.5 text-center text-sm font-medium transition-colors ${
@@ -106,8 +118,22 @@ export function Pricing() {
           })}
         </div>
 
-        <Reveal className="mt-10 flex flex-wrap items-center justify-center gap-2 text-sm text-muted">
-          <span>AI usage runs on monthly credits included with your plan, refilled every month.</span>
+        <Reveal className="mx-auto mt-6 max-w-5xl rounded-2xl border border-border bg-white p-6 sm:p-8">
+          <h3 className="font-semibold">Included in every plan</h3>
+          <ul className="mt-5 grid grid-cols-1 gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
+            {includedInEveryPlan.map((f) => (
+              <li key={f} className="flex items-start gap-2.5">
+                <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-brand-soft text-brand">
+                  <Check className="size-2.5" strokeWidth={3} aria-hidden />
+                </span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
+        <Reveal className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-muted">
+          <span>AI credits refill every month.</span>
           <span className="hidden sm:inline">·</span>
           <span>Coming soon:</span>
           {comingSoon.map((c) => (
